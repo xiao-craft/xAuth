@@ -1,16 +1,15 @@
 package com.xlf.mc.xLogin.util;
 
 import com.xlf.mc.xLogin.constant.PrefixConstant;
-import org.slf4j.LoggerFactory;
 
 /**
  * 这是一个日志工具类，用于记录日志
  * <p>
  * 该类用于记录插件的日志
  *
- * @since 1.0.0-SNAPSHOT
- * @version 1.0.0-SNAPSHOT
  * @author xiao_lfeng
+ * @version 1.0.0-SNAPSHOT
+ * @since 1.0.0-SNAPSHOT
  */
 public class Logger {
 

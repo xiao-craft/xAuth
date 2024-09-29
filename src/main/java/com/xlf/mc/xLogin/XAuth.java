@@ -1,10 +1,8 @@
 package com.xlf.mc.xLogin;
 
-import com.xlf.mc.xLogin.handler.command.RegisterCommandHandler;
 import com.xlf.mc.xLogin.init.Init;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
 import java.util.logging.Level;
 
 /**
