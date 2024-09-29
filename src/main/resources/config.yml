@@ -1,0 +1,25 @@
+#
+# xAuth 配置文件
+#     - v1.0.0 筱锋xiao_lfeng
+#
+
+# xAuth 配置
+setting:
+  debug: false
+
+# 数据库配置
+database:
+  # 数据库类型（目前支持 sqlite, mysql）
+  type: sqlite
+  # 数据库连接地址
+  url: jdbc:sqlite:./xauth.db
+  # 数据库用户名
+  username: root
+  # 数据库密码
+  password: root
+  # 数据库端口
+  port: 3306
+  # 数据库名称
+  database: mc_xauth
+  # 数据库表前缀
+  prefix: xf_
