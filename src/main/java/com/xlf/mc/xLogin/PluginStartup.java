@@ -3,6 +3,7 @@ package com.xlf.mc.xLogin;
 import com.xlf.mc.xLogin.cache.PlayerCache;
 import com.xlf.mc.xLogin.handler.command.LoginCommandHandler;
 import com.xlf.mc.xLogin.handler.command.RegisterCommandHandler;
+import com.xlf.mc.xLogin.handler.command.VerifyCommandHandler;
 import com.xlf.mc.xLogin.handler.listener.PlayerJoinListener;
 import com.xlf.mc.xLogin.handler.listener.PlayerOpreateListener;
 import com.xlf.mc.xLogin.handler.task.UserLoginTask;
@@ -92,6 +93,7 @@ public class PluginStartup {
         Logger.debug("初始化命令...");
         Objects.requireNonNull(mcPlugin.getCommand("register")).setExecutor(new RegisterCommandHandler());
         Objects.requireNonNull(mcPlugin.getCommand("login")).setExecutor(new LoginCommandHandler());
+        Objects.requireNonNull(mcPlugin.getCommand("verify")).setExecutor(new VerifyCommandHandler());
         return this;
     }
 
