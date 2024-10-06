@@ -15,7 +15,7 @@ commands:
     permission-message: 你没有权限登录
   register:
     description: 注册
-    usage: /register <密码> <确认密码>
+    usage: /register <邮箱> <密码> <重复密码>
     aliases: [reg, r]
     permission: xauth.register
     permission-message: 你没有权限注册

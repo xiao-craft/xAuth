@@ -8,8 +8,8 @@ import com.xlf.mc.xLogin.constant.PrefixConstant;
  * 该类用于记录插件的日志
  *
  * @author xiao_lfeng
- * @version 1.0.0-SNAPSHOT
- * @since 1.0.0-SNAPSHOT
+ * @version v1.0-SNAPSHOT
+ * @since v1.0-SNAPSHOT
  */
 public class Logger {
 

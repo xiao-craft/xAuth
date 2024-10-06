@@ -5,8 +5,8 @@ package com.xlf.mc.xLogin.constant;
  * <p>
  * 该类存放了插件的前缀常量
  *
- * @since 1.0.0-SNAPSHOT
- * @version 1.0.0-SNAPSHOT
+ * @since v1.0-SNAPSHOT
+ * @version v1.0-SNAPSHOT
  * @author xiao_lfeng
  */
 public class PrefixConstant {

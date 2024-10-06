@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 该类用于存放插件的常量，如插件主类、插件日志等。
  *
  * @author xiao_lfeng
- * @version 1.0.0-SNAPSHOT
- * @since 1.0.0-SNAPSHOT
+ * @version v1.0-SNAPSHOT
+ * @since v1.0-SNAPSHOT
  */
 public class PluginConstant {
     public static JavaPlugin mcPlugin;

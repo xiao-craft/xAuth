@@ -20,6 +20,4 @@ database:
   # 数据库端口
   port: 3306
   # 数据库名称
-  database: mc_xauth
-  # 数据库表前缀
-  prefix: xf_
+  db: mc_xauth
