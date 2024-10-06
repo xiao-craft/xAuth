@@ -2,6 +2,8 @@ package com.xlf.mc.xLogin.util;
 
 import com.xlf.mc.xLogin.constant.PrefixConstant;
 
+import static com.xlf.mc.xLogin.constant.PluginConstant.isDebug;
+
 /**
  * 这是一个日志工具类，用于记录日志
  * <p>
@@ -14,7 +16,9 @@ import com.xlf.mc.xLogin.constant.PrefixConstant;
 public class Logger {
 
     public static void debug(String message) {
-        java.util.logging.Logger.getLogger(PrefixConstant.PLUGIN_DEBUG_PREFIX).info(message);
+        if (isDebug) {
+            java.util.logging.Logger.getLogger(PrefixConstant.PLUGIN_DEBUG_PREFIX).info(message);
+        }
     }
 
     public static void info(String message) {

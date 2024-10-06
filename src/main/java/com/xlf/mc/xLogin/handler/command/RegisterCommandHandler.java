@@ -9,9 +9,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static com.xlf.mc.xLogin.constant.PrefixConstant.PLUGIN_PREFIX;
 
@@ -47,9 +51,6 @@ public class RegisterCommandHandler implements CommandExecutor {
                     return true;
                 }
                 try (Connection connection = Database.getConnection()) {
-                    try (Statement statement = connection.createStatement()) {
-                        statement.execute("USE `mc_xauth`;");
-                    }
                     String sql = "SELECT * FROM `mc_xauth_user` WHERE `email` = ? OR `username` = ?";
                     try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                         preparedStatement.setString(1, email);
@@ -86,6 +87,7 @@ public class RegisterCommandHandler implements CommandExecutor {
                             user.setLogin(true);
                         }
                     });
+                    ((Player) sender).removePotionEffect(PotionEffectType.SLOWNESS);
                 } catch (SQLException e) {
                     sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，请联系管理员！（错误码：DatabaseOperationFailed-" + System.currentTimeMillis());
                     Logger.error("数据库操作失败，对应错误代码：DatabaseOperationFailed-" + System.currentTimeMillis());

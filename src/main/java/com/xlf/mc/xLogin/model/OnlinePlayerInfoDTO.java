@@ -1,4 +1,4 @@
-package com.xlf.mc.xLogin.model.dto;
+package com.xlf.mc.xLogin.model;
 
 import java.util.UUID;
 

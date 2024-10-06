@@ -8,6 +8,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.PreparedStatement;
@@ -48,12 +50,13 @@ public class LoginCommandHandler implements CommandExecutor {
                         if (resultSet.next()) {
                             String userPassword = resultSet.getString("password");
                             if (PasswordUtil.verify(password, userPassword)) {
-                                sender.sendMessage(PLUGIN_PREFIX + "§a欢迎回来 " + sender.getName() + "！");
+                                sender.sendMessage(PLUGIN_PREFIX + "§a欢迎回来 §e" + sender.getName() + "§a！");
                                 PlayerCache.playerList.forEach(user -> {
                                     if (sender.getName().equals(user.getUsername())) {
                                         user.setLogin(true);
                                     }
                                 });
+                                ((Player) sender).removePotionEffect(PotionEffectType.SLOWNESS);
                             } else {
                                 sender.sendMessage(PLUGIN_PREFIX + "§c密码错误！");
                             }

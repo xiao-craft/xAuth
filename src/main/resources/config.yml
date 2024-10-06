@@ -12,7 +12,7 @@ database:
   # 数据库类型（目前支持 sqlite, mysql）
   type: sqlite
   # 数据库连接地址
-  url: jdbc:sqlite:./xauth.db
+  url: localhost
   # 数据库用户名
   username: root
   # 数据库密码

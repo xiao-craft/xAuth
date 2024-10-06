@@ -12,6 +12,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.xlf.mc.xLogin.constant.PluginConstant.isDebug;
+import static com.xlf.mc.xLogin.constant.PluginConstant.mcPlugin;
 
 /**
  * 数据库管理器
@@ -37,7 +38,9 @@ public class Database {
         if ("mysql".equalsIgnoreCase(dbType)) {
             connectionSource = "jdbc:mysql://" + dbPath + "/" + database;
         } else if ("sqlite".equalsIgnoreCase(dbType)) {
-            connectionSource = "jdbc:sqlite:" + dbPath;
+            // 获取插件配置目录
+            connectionSource = "jdbc:sqlite:"+ mcPlugin.getDataFolder() +"/mc_xauth.db";
+            Logger.debug("数据库连接地址：" + connectionSource);
         }
 
         // 连接数据库
@@ -73,7 +76,7 @@ public class Database {
                     if (!checkDatabaseHasThisTable(newName)) {
                         if (entryName.startsWith("sql/") && entryName.endsWith(".sql")) {
                             // 读取 SQL 文件
-                            DebugUtil.debug("正在读取 JAR 文件中的 SQL 文件：" + entryName);
+                            Logger.debug("正在读取 JAR 文件中的 SQL 文件：" + entryName);
                             InputStream inputStream = Database.class.getClassLoader().getResourceAsStream(entryName);
                             if (inputStream != null) {
                                 String sql = new String(inputStream.readAllBytes());

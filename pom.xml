@@ -81,13 +81,6 @@
             <version>3.13.56</version>
             <scope>provided</scope>
         </dependency>
-        <!-- ProtocolLib -->
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>5.1.0</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- MySQL 连接库 -->
         <dependency>

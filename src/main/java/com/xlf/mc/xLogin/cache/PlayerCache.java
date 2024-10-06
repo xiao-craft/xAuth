@@ -1,6 +1,6 @@
 package com.xlf.mc.xLogin.cache;
 
-import com.xlf.mc.xLogin.model.dto.OnlinePlayerInfoDTO;
+import com.xlf.mc.xLogin.model.OnlinePlayerInfoDTO;
 
 import java.util.List;
 

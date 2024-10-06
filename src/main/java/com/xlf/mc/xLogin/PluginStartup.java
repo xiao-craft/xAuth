@@ -35,9 +35,7 @@ public class PluginStartup {
         }
         coreConfig = YamlConfiguration.loadConfiguration(coreFile);
         isDebug = coreConfig.getBoolean("setting.debug");
-        if (isDebug) {
-            Logger.debug("初始化文件已完成!");
-        }
+        Logger.debug("初始化文件已完成!");
         return this;
     }
 
@@ -47,9 +45,7 @@ public class PluginStartup {
      * 该方法用于获取插件的数据库配置，用于启动初始化插件。
      */
     public PluginStartup pluginConfigDatabase() {
-        if (isDebug) {
-            Logger.debug("初始化数据库配置...");
-        }
+        Logger.debug("初始化数据库配置...");
         String getDatabaseType = coreConfig.getString("database.type");
         String databaseUsername = coreConfig.getString("database.username");
         String databasePassword = coreConfig.getString("database.password");
@@ -72,18 +68,14 @@ public class PluginStartup {
     }
 
     public PluginStartup pluginConfigListener() {
-        if (isDebug) {
-            Logger.debug("初始化监听器...");
-        }
+        Logger.debug("初始化监听器...");
         mcPlugin.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), mcPlugin);
         mcPlugin.getServer().getPluginManager().registerEvents(new PlayerOpreateListener(), mcPlugin);
         return this;
     }
 
     public PluginStartup pluginConfigTask() {
-        if (isDebug) {
-            Logger.debug("初始化任务...");
-        }
+        Logger.debug("初始化定时任务...");
         UserLoginTask.onUserNotLoginSend();
         UserLoginTask.onNotLoginNotMove();
         UserLoginTask.onNotLoginInvincible();
@@ -97,18 +89,19 @@ public class PluginStartup {
      * 该方法用于获取插件的命令，用于启动初始化插件。
      */
     public PluginStartup pluginConfigCommand() {
-        if (isDebug) {
-            Logger.debug("注册命令...");
-        }
+        Logger.debug("初始化命令...");
         Objects.requireNonNull(mcPlugin.getCommand("register")).setExecutor(new RegisterCommandHandler());
         Objects.requireNonNull(mcPlugin.getCommand("login")).setExecutor(new LoginCommandHandler());
         return this;
     }
 
+    /**
+     * 初始化插件 - 获取插件协议
+     * <p>
+     * 该方法用于获取插件的协议，用于启动初始化插件。
+     */
     public PluginStartup pluginConfigCache() {
-        if (isDebug) {
-            Logger.debug("初始化缓存...");
-        }
+        Logger.debug("初始化缓存...");
         PlayerCache.playerList = new ArrayList<>();
         return this;
     }
