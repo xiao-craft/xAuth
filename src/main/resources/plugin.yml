@@ -6,6 +6,7 @@ prefix: xAuth
 authors: [ 筱锋xiao_lfeng ]
 description: 更好的登录系统，用户可以在网页上进行数据同步
 website: https://www.x-lf.com
+depend: [ProtocolLib]
 commands:
   login:
     description: 登录

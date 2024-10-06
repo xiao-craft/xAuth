@@ -1,14 +1,17 @@
-package com.xlf.mc.xLogin.startup;
+package com.xlf.mc.xLogin;
 
+import com.xlf.mc.xLogin.cache.PlayerCache;
+import com.xlf.mc.xLogin.handler.command.LoginCommandHandler;
 import com.xlf.mc.xLogin.handler.command.RegisterCommandHandler;
-import com.xlf.mc.xLogin.handler.listener.CommandListener;
-import com.xlf.mc.xLogin.handler.listener.PlayerListener;
-import com.xlf.mc.xLogin.handler.task.LoginMessageTask;
-import com.xlf.mc.xLogin.util.DatabaseManager;
+import com.xlf.mc.xLogin.handler.listener.PlayerJoinListener;
+import com.xlf.mc.xLogin.handler.listener.PlayerOpreateListener;
+import com.xlf.mc.xLogin.handler.task.UserLoginTask;
+import com.xlf.mc.xLogin.util.Database;
 import com.xlf.mc.xLogin.util.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.xlf.mc.xLogin.constant.PluginConstant.*;
@@ -64,7 +67,7 @@ public class PluginStartup {
         } else {
             throw new RuntimeException("数据库配置错误！");
         }
-        DatabaseManager.setupDatabase(getDatabaseType, getDataBasePath, databaseDb, databaseUsername, databasePassword);
+        Database.setupDatabase(getDatabaseType, getDataBasePath, databaseDb, databaseUsername, databasePassword);
         return this;
     }
 
@@ -72,8 +75,8 @@ public class PluginStartup {
         if (isDebug) {
             Logger.debug("初始化监听器...");
         }
-        mcPlugin.getServer().getPluginManager().registerEvents(new PlayerListener(), mcPlugin);
-        mcPlugin.getServer().getPluginManager().registerEvents(new CommandListener(), mcPlugin);
+        mcPlugin.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), mcPlugin);
+        mcPlugin.getServer().getPluginManager().registerEvents(new PlayerOpreateListener(), mcPlugin);
         return this;
     }
 
@@ -81,8 +84,10 @@ public class PluginStartup {
         if (isDebug) {
             Logger.debug("初始化任务...");
         }
-        LoginMessageTask.onUserNotLoginSend();
-        LoginMessageTask.onNotLoginNotMove();
+        UserLoginTask.onUserNotLoginSend();
+        UserLoginTask.onNotLoginNotMove();
+        UserLoginTask.onNotLoginInvincible();
+        UserLoginTask.onNotLoginWith2MinutesKick();
         return this;
     }
 
@@ -95,8 +100,16 @@ public class PluginStartup {
         if (isDebug) {
             Logger.debug("注册命令...");
         }
-        Objects.requireNonNull(mcPlugin.getCommand("register"))
-                .setExecutor(new RegisterCommandHandler());
+        Objects.requireNonNull(mcPlugin.getCommand("register")).setExecutor(new RegisterCommandHandler());
+        Objects.requireNonNull(mcPlugin.getCommand("login")).setExecutor(new LoginCommandHandler());
+        return this;
+    }
+
+    public PluginStartup pluginConfigCache() {
+        if (isDebug) {
+            Logger.debug("初始化缓存...");
+        }
+        PlayerCache.playerList = new ArrayList<>();
         return this;
     }
 

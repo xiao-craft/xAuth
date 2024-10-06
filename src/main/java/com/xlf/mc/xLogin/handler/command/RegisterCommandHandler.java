@@ -1,7 +1,7 @@
 package com.xlf.mc.xLogin.handler.command;
 
-import com.xlf.mc.xLogin.model.entity.UserEntity;
-import com.xlf.mc.xLogin.util.DatabaseManager;
+import com.xlf.mc.xLogin.cache.PlayerCache;
+import com.xlf.mc.xLogin.util.Database;
 import com.xlf.mc.xLogin.util.Logger;
 import com.xlf.mc.xLogin.util.PasswordUtil;
 import org.bukkit.command.Command;
@@ -11,7 +11,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
+import java.sql.*;
 
 import static com.xlf.mc.xLogin.constant.PrefixConstant.PLUGIN_PREFIX;
 
@@ -44,35 +44,50 @@ public class RegisterCommandHandler implements CommandExecutor {
                 String confirmPassword = args[2];
                 if (!password.equals(confirmPassword)) {
                     sender.sendMessage(PLUGIN_PREFIX + "§c两次输入的密码不一致！");
+                    return true;
                 }
-                try {
-                    UserEntity emailExist = DatabaseManager.getUserEntity().queryBuilder()
-                            .where().eq("email", email).queryForFirst();
-                    if (emailExist != null) {
-                        sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，该邮箱已被注册！");
-                        return true;
+                try (Connection connection = Database.getConnection()) {
+                    try (Statement statement = connection.createStatement()) {
+                        statement.execute("USE `mc_xauth`;");
                     }
+                    String sql = "SELECT * FROM `mc_xauth_user` WHERE `email` = ? OR `username` = ?";
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                        preparedStatement.setString(1, email);
+                        preparedStatement.setString(2, sender.getName());
+
+                        // 执行查询并获取结果集
+                        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                            // 处理结果集
+                            while (resultSet.next()) {
+                                String userUuid = resultSet.getString("uuid");
+                                if (userUuid != null) {
+                                    sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，该邮箱或用户已被注册！");
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                    // 注册玩家
                     Player getUser = (Player) sender;
-                    // 获取玩家信息
-                    UserEntity userExist = DatabaseManager.getUserEntity().queryBuilder()
-                            .where().eq("uuid", getUser.getUniqueId().toString())
-                            .or().eq("username", getUser.getName())
-                            .queryForFirst();
-                    if (userExist != null) {
-                        sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，该玩家已注册！");
-                        return true;
+                    String registerSql = "INSERT INTO `mc_xauth_user` (`uuid`, `username`, `email`, `password`) VALUES (?, ?, ?, ?)";
+                    try (PreparedStatement preparedStatement = connection.prepareStatement(registerSql)) {
+                        preparedStatement.setString(1, getUser.getUniqueId().toString());
+                        preparedStatement.setString(2, getUser.getName());
+                        preparedStatement.setString(3, email);
+                        preparedStatement.setString(4, PasswordUtil.encrypt(password));
+
+                        preparedStatement.execute();
                     }
-                    UserEntity newUser = new UserEntity(
-                            getUser.getUniqueId(),
-                            getUser.getName(),
-                            email,
-                            PasswordUtil.encrypt(password),
-                            null,
-                            null
-                    );
-                    DatabaseManager.getUserEntity().create(newUser);
+                    // 设置用户已登录
+                    sender.sendMessage(PLUGIN_PREFIX + "§a欢迎您 §e" + sender.getName() + "§a 加入这个大家庭！");
+                    PlayerCache.playerList.forEach(user -> {
+                        if (getUser.getUniqueId().equals(user.getUuid())) {
+                            user.setLogin(true);
+                        }
+                    });
                 } catch (SQLException e) {
-                    sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，请联系管理员！（错误代码：DatabaseOperationFailed-" + System.currentTimeMillis());
+                    sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，请联系管理员！（错误码：DatabaseOperationFailed-" + System.currentTimeMillis());
                     Logger.error("数据库操作失败，对应错误代码：DatabaseOperationFailed-" + System.currentTimeMillis());
                     Logger.error("错误信息：" + e.getMessage());
                 }
