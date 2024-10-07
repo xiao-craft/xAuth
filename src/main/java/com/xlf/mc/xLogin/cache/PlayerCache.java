@@ -1,6 +1,7 @@
 package com.xlf.mc.xLogin.cache;
 
 import com.xlf.mc.xLogin.model.OnlinePlayerInfoDTO;
+import com.xlf.mc.xLogin.model.VerifyCodeInfoDTO;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ import java.util.List;
  */
 public class PlayerCache {
     public static List<OnlinePlayerInfoDTO> playerList;
+    public static List<VerifyCodeInfoDTO> verifyCodeList;
 }

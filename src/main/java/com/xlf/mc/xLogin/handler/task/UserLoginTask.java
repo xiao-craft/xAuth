@@ -58,10 +58,10 @@ public class UserLoginTask {
                         PlayerCache.playerList.forEach(user -> {
                             if (player.getUniqueId().equals(user.getUuid())) {
                                 if (!user.isLogin()) {
-                                    player.teleport(player.getLocation());
+                                    player.teleport(user.getLocation());
                                 }
                             }
-                        })), 0L, 1L);
+                        })), 0L, 0L);
     }
 
     /**

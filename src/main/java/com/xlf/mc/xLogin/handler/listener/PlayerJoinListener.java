@@ -1,9 +1,9 @@
 package com.xlf.mc.xLogin.handler.listener;
 
 import com.xlf.mc.xLogin.cache.PlayerCache;
+import com.xlf.mc.xLogin.config.Database;
 import com.xlf.mc.xLogin.constant.PrefixConstant;
 import com.xlf.mc.xLogin.model.OnlinePlayerInfoDTO;
-import com.xlf.mc.xLogin.util.Database;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
@@ -94,10 +94,11 @@ public class PlayerJoinListener implements Listener {
             }
         });
         // 为玩家添加缓效果
-        event.getPlayer().addPotionEffect(PotionEffectType.SLOWNESS.createEffect(999999, 255));
+        event.getPlayer().addPotionEffect(PotionEffectType.SLOWNESS.createEffect(999999, 100));
         // 检查玩家是否第一次进入服务器
         PlayerCache.playerList.forEach(user -> {
             if (event.getPlayer().getUniqueId().equals(user.getUuid())) {
+                user.setLocation(event.getPlayer().getLocation());
                 if (user.isFirstLogin()) {
                     event.getPlayer().showTitle(Title.title(
                             Component.text("§a欢迎加入这个大家庭！"),

@@ -1,9 +1,12 @@
 package com.xlf.mc.xLogin.handler.command;
 
 import com.xlf.mc.xLogin.cache.PlayerCache;
-import com.xlf.mc.xLogin.util.Database;
+import com.xlf.mc.xLogin.config.Database;
 import com.xlf.mc.xLogin.util.Logger;
+import com.xlf.mc.xLogin.util.MailCodeUtil;
 import com.xlf.mc.xLogin.util.PasswordUtil;
+import jakarta.mail.MessagingException;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +19,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.xlf.mc.xLogin.constant.PluginConstant.mcPlugin;
 import static com.xlf.mc.xLogin.constant.PrefixConstant.PLUGIN_PREFIX;
 
 /**
@@ -43,6 +48,19 @@ public class RegisterCommandHandler implements CommandExecutor {
             if (args.length != 3) {
                 sender.sendMessage(PLUGIN_PREFIX + "§c使用方法: /register <邮箱> <密码> <确认密码>");
             } else {
+                // 检查用户是否已登录
+                AtomicBoolean isLogin = new AtomicBoolean(false);
+                PlayerCache.playerList.forEach(user -> {
+                    if (sender.getName().equals(user.getUsername())) {
+                        if (user.isLogin()) {
+                            sender.sendMessage(PLUGIN_PREFIX + "§a你已经登录！");
+                            isLogin.set(true);
+                        }
+                    }
+                });
+                if (isLogin.get()) {
+                    return true;
+                }
                 String email = args[0];
                 String password = args[1];
                 String confirmPassword = args[2];
@@ -88,6 +106,19 @@ public class RegisterCommandHandler implements CommandExecutor {
                         }
                     });
                     ((Player) sender).removePotionEffect(PotionEffectType.SLOWNESS);
+                    Bukkit.getScheduler().runTaskAsynchronously(mcPlugin, () -> {
+                        try {
+                            MailCodeUtil.sendCode(email, sender);
+                        } catch (MessagingException e) {
+                            Bukkit.getScheduler().runTask(mcPlugin, () -> sender.sendMessage(PLUGIN_PREFIX + "§c验证码发送失败，请联系管理员！（错误码：SendMailFailed-" + System.currentTimeMillis()));
+                            Logger.error("数据库操作失败，对应错误代码：SendMailFailed-" + System.currentTimeMillis());
+                            Logger.error("错误信息：" + e.getMessage());
+                        } catch (RuntimeException e) {
+                            Bukkit.getScheduler().runTask(mcPlugin, () -> sender.sendMessage(PLUGIN_PREFIX + "§c模版获取失败，请联系管理员！（错误码： MailTemplateFailed-" + System.currentTimeMillis()));
+                            Logger.error("数据库操作失败，对应错误代码：MailTemplateFailed-" + System.currentTimeMillis());
+                            Logger.error("错误信息：" + e.getMessage());
+                        }
+                    });
                 } catch (SQLException e) {
                     sender.sendMessage(PLUGIN_PREFIX + "§c注册失败，请联系管理员！（错误码：DatabaseOperationFailed-" + System.currentTimeMillis());
                     Logger.error("数据库操作失败，对应错误代码：DatabaseOperationFailed-" + System.currentTimeMillis());

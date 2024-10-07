@@ -1,4 +1,6 @@
-package com.xlf.mc.xLogin.util;
+package com.xlf.mc.xLogin.config;
+
+import com.xlf.mc.xLogin.util.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;

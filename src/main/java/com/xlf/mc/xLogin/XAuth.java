@@ -1,7 +1,8 @@
 package com.xlf.mc.xLogin;
 
+import com.xlf.mc.xLogin.config.Database;
+import com.xlf.mc.xLogin.config.Mail;
 import com.xlf.mc.xLogin.constant.PluginConstant;
-import com.xlf.mc.xLogin.util.Database;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -26,10 +27,11 @@ public final class XAuth extends JavaPlugin {
         startup
                 .pluginConfigFile()
                 .pluginConfigDatabase()
+                .pluginConfigCache()
+                .pluginConfigMail()
                 .pluginConfigListener()
                 .pluginConfigTask()
                 .pluginConfigCommand()
-                .pluginConfigCache()
                 .build();
     }
 
@@ -37,5 +39,6 @@ public final class XAuth extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         Database.shutdown();
+        Mail.shutdown();
     }
 }

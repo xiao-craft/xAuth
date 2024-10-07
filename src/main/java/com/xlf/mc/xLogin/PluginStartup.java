@@ -1,13 +1,16 @@
 package com.xlf.mc.xLogin;
 
 import com.xlf.mc.xLogin.cache.PlayerCache;
+import com.xlf.mc.xLogin.config.Database;
+import com.xlf.mc.xLogin.config.Mail;
 import com.xlf.mc.xLogin.handler.command.LoginCommandHandler;
 import com.xlf.mc.xLogin.handler.command.RegisterCommandHandler;
 import com.xlf.mc.xLogin.handler.command.VerifyCommandHandler;
+import com.xlf.mc.xLogin.handler.command.XAuthCommandHandler;
 import com.xlf.mc.xLogin.handler.listener.PlayerJoinListener;
 import com.xlf.mc.xLogin.handler.listener.PlayerOpreateListener;
 import com.xlf.mc.xLogin.handler.task.UserLoginTask;
-import com.xlf.mc.xLogin.util.Database;
+import com.xlf.mc.xLogin.handler.task.VerifyCodeTask;
 import com.xlf.mc.xLogin.util.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -29,6 +32,7 @@ public class PluginStartup {
      * 该方法用于获取插件的配置文件，用于启动初始化插件。
      */
     public PluginStartup pluginConfigFile() {
+        // 配置文件初始化
         File coreFile = new File(mcPlugin.getDataFolder() + "/config.yml");
         if (!coreFile.exists()) {
             mcPlugin.saveResource("config.yml", false);
@@ -36,6 +40,14 @@ public class PluginStartup {
         }
         coreConfig = YamlConfiguration.loadConfiguration(coreFile);
         isDebug = coreConfig.getBoolean("setting.debug");
+
+        // 邮件模板初始化
+        File mailFile = new File(mcPlugin.getDataFolder() + "/mail.yml");
+        if (!mailFile.exists()) {
+            mcPlugin.saveResource("template/code.html", false);
+            Logger.debug("初始化邮件验证码模板!");
+        }
+
         Logger.debug("初始化文件已完成!");
         return this;
     }
@@ -68,6 +80,12 @@ public class PluginStartup {
         return this;
     }
 
+    public PluginStartup pluginConfigMail() {
+        Logger.debug("初始化邮件配置...");
+        Mail.setUp();
+        return this;
+    }
+
     public PluginStartup pluginConfigListener() {
         Logger.debug("初始化监听器...");
         mcPlugin.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), mcPlugin);
@@ -81,6 +99,7 @@ public class PluginStartup {
         UserLoginTask.onNotLoginNotMove();
         UserLoginTask.onNotLoginInvincible();
         UserLoginTask.onNotLoginWith2MinutesKick();
+        VerifyCodeTask.onDeleteExpiredVerificationCodes();
         return this;
     }
 
@@ -94,6 +113,8 @@ public class PluginStartup {
         Objects.requireNonNull(mcPlugin.getCommand("register")).setExecutor(new RegisterCommandHandler());
         Objects.requireNonNull(mcPlugin.getCommand("login")).setExecutor(new LoginCommandHandler());
         Objects.requireNonNull(mcPlugin.getCommand("verify")).setExecutor(new VerifyCommandHandler());
+        Objects.requireNonNull(mcPlugin.getCommand("xauth")).setExecutor(new XAuthCommandHandler());
+
         return this;
     }
 
@@ -105,6 +126,7 @@ public class PluginStartup {
     public PluginStartup pluginConfigCache() {
         Logger.debug("初始化缓存...");
         PlayerCache.playerList = new ArrayList<>();
+        PlayerCache.verifyCodeList = new ArrayList<>();
         return this;
     }
 

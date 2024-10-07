@@ -1,5 +1,7 @@
 package com.xlf.mc.xLogin.model;
 
+import org.bukkit.Location;
+
 import java.util.UUID;
 
 /**
@@ -17,6 +19,7 @@ public class OnlinePlayerInfoDTO {
     private boolean isLogin;
     private long loginTime;
     private boolean isFirstLogin;
+    private Location location;
 
     public long getLoginTime() {
         return loginTime;
@@ -62,5 +65,13 @@ public class OnlinePlayerInfoDTO {
     public OnlinePlayerInfoDTO setFirstLogin(boolean firstLogin) {
         isFirstLogin = firstLogin;
         return this;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 }

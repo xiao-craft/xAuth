@@ -1,7 +1,7 @@
 package com.xlf.mc.xLogin.handler.command;
 
 import com.xlf.mc.xLogin.cache.PlayerCache;
-import com.xlf.mc.xLogin.util.Database;
+import com.xlf.mc.xLogin.config.Database;
 import com.xlf.mc.xLogin.util.Logger;
 import com.xlf.mc.xLogin.util.PasswordUtil;
 import org.bukkit.command.Command;
@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.xlf.mc.xLogin.constant.PrefixConstant.PLUGIN_PREFIX;
 
@@ -41,6 +42,19 @@ public class LoginCommandHandler implements CommandExecutor {
             if (args.length != 1) {
                 sender.sendMessage(PLUGIN_PREFIX + "§c使用方法: /login <密码>");
             } else {
+                // 检查用户是否已登录
+                AtomicBoolean isLogin = new AtomicBoolean(false);
+                PlayerCache.playerList.forEach(user -> {
+                    if (sender.getName().equals(user.getUsername())) {
+                        if (user.isLogin()) {
+                            sender.sendMessage(PLUGIN_PREFIX + "§a你已经登录！");
+                            isLogin.set(true);
+                        }
+                    }
+                });
+                if (isLogin.get()) {
+                    return true;
+                }
                 String password = args[0];
                 // 从数据库获取用户信息
                 String getUserInfoSql = "SELECT * FROM `mc_xauth_user` WHERE `username` = ?;";

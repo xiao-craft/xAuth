@@ -21,3 +21,25 @@ database:
   port: 3306
   # 数据库名称
   db: mc_xauth
+
+mail:
+  # 邮件服务器地址
+  host: smtp.qiye.aliyun.com
+  # 邮件服务器端口
+  port: 25
+  # 邮件服务器用户名
+  username: noreplay@x-lf.cn
+  # 邮件服务器密码
+  password: password
+  # 邮件服务器发件人
+  from: noreplay@x-lf.cn
+  # 邮件服务器发件人名称
+  from_name: xAuth
+  # 邮件服务器是否启用 SSL
+  ssl: false
+  # 邮件服务器是否启用 TLS
+  tls: false
+  # 邮件服务器是否启用调试
+  debug: false
+  # 邮件服务器是否启用验证
+  auth: true
